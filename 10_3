@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <conio.h>
+int main()
+{
+    // khai báo
+    FILE *fp;
+    fp = fopen("SAMPLE.txt", "w");
+    int i, j;
+    char vb;
+
+    // Ghi 5 dong vb
+    for (i = 1; i <= 5; i++)
+    {
+        printf("Nhap dong van ban thu %d:\n", i);
+        gets(vb);
+        fprintf(fp, "%s\n", vb);
+    }
+    fclose(fp);
+
+    // Bo sung 3 dong = putc()
+    fp = fopen("SAMPLE.txt", "a");
+    char *dong[3] = {"Dong bo sung thu nhat", "Dong bo sung thu hai", "Dong bo sung thu ba"};
+    for (i = 1; i <= 3; i++)
+    {
+        for (j = 1; j <= strlen(dong[i - 1]); j++)
+        {
+            putc(dong[i - 1][j - 1], fp);
+        }
+        putc('\n', fp);
+    }
+    fclose(fp);
+
+    // Nhap bo sung 1 vb vao ham fputs()
+    fp = fopen("SAMPLE.txt", "a");
+    char vban[100];
+    printf("Nhap dong van ban:\n");
+    fgets(vban, 100, stdin);
+    fputs(vban, fp);
+    fclose(fp);
+    return 0;
+}
