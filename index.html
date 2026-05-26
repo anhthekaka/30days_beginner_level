@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>6 Nhóm Bài Toán AI × Tài Chính</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0f14;
+      --bg2:       #13161e;
+      --bg3:       #1a1e29;
+      --border:    rgba(255,255,255,0.07);
+      --border-hov:rgba(255,255,255,0.15);
+      --text:      #e8eaf0;
+      --muted:     #7a7f94;
+      --accent1:   #4f8ef7;
+      --accent2:   #f7a94f;
+
+      --vn:    #e2554a;
+      --gap:   #d4904a;
+      --new:   #4f8ef7;
+      --res:   #6b7280;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Be Vietnam Pro', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 0 0 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 64px 40px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--accent1);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    h1 {
+      font-size: clamp(26px, 4vw, 42px);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -.01em;
+      max-width: 620px;
+    }
+    h1 span { color: var(--accent1); }
+    .subtitle {
+      margin-top: 14px;
+      color: var(--muted);
+      max-width: 540px;
+      font-size: 14px;
+    }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 0 40px 36px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .leg { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
+    .leg-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
+      padding: 0 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s, transform .15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      opacity: 0;
+      transition: opacity .25s;
+      pointer-events: none;
+    }
+    .card:hover { border-color: var(--border-hov); background: var(--bg3); transform: translateY(-2px); }
+    .card:hover::before { opacity: 1; }
+
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+    .group-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+    .card-title { font-size: 15px; font-weight: 500; line-height: 1.35; }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: .03em;
+    }
+    .badge-vn  { background: rgba(226,85,74,.15);  color: var(--vn); }
+    .badge-gap { background: rgba(212,144,74,.15); color: var(--gap); }
+    .badge-new { background: rgba(79,142,247,.15); color: var(--new); }
+    .badge-res { background: rgba(107,114,128,.15);color: var(--res); }
+
+    /* Tags */
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+    .tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      border: 0.5px solid var(--border);
+      color: var(--muted);
+      background: var(--bg);
+    }
+
+    /* Meters */
+    .meters { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .meter-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; letter-spacing: .04em; }
+    .meter-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .meter-fill { height: 100%; border-radius: 2px; transition: width .6s cubic-bezier(.25,.8,.25,1); }
+
+    /* Toggle row */
+    .toggle-row {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .chevron { display: inline-block; transition: transform .25s; }
+    .chevron.open { transform: rotate(180deg); }
+
+    /* Detail */
+    .detail-wrap { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
+    .detail-wrap.open { max-height: 800px; }
+    .detail {
+      border-top: 0.5px solid var(--border);
+      margin-top: 12px;
+      padding-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .dl { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .dd { font-size: 13px; color: rgba(232,234,240,.75); line-height: 1.6; }
+
+    @media (max-width: 600px) {
+      header, .legend, .grid { padding-left: 18px; padding-right: 18px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Phân tích chiến lược · 2025</div>
+  <h1>6 Nhóm Bài Toán<br><span>AI × Tài Chính</span></h1>
+  <p class="subtitle">Bản đồ mức độ sẵn sàng ứng dụng, lỗ hổng công nghệ và cơ hội tại thị trường Việt Nam.</p>
+</header>
+
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:var(--vn)"></div>Đã ứng dụng tại VN – còn lỗ hổng</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--gap)"></div>Ứng dụng quốc tế – chưa phổ biến ở VN</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--new)"></div>Ứng dụng mới nổi – tiềm năng cao</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--res)"></div>Chủ yếu nghiên cứu học thuật</div>
+</div>
+
+<div class="grid" id="cards"></div>
+
+<script>
+const groups = [
+  {
+    id:1, label:"Nhóm 1",
+    title:"AI cho Phân tích Kinh tế vĩ mô",
+    status:"gap", statusText:"Đã ứng dụng – còn lỗ hổng",
+    tags:["Dự báo GDP","Lạm phát","BCTC","Chứng khoán","Tỷ giá"],
+    techLevel:75, userDemand:80, urgency:70,
+    problem:"Phân tích kinh tế vĩ mô và sức khỏe doanh nghiệp từ dữ liệu phi cấu trúc (báo cáo tài chính, tin tức, chính sách) — hiện phụ thuộc nhiều vào chuyên gia và mô hình thống kê cổ điển.",
+    tech:"Time-series ML (LSTM, Transformer), NLP trích xuất BCTC, Graph Neural Network phân tích chuỗi cung ứng, explainable AI cho cảnh báo suy thoái.",
+    stage:"Đã ứng dụng quốc tế (Bloomberg, IMF, Fed). Tại VN: NHTM lớn và SSI, VCSC có mô hình nội bộ nhưng chưa chuẩn hóa, thiếu dữ liệu chất lượng cao, không mở cho SME.",
+    gap:"Dữ liệu BCTC Việt Nam ít chuẩn hóa, thiếu dữ liệu thay thế (alternative data), mô hình chưa tích hợp yếu tố địa chính trị khu vực.",
+    opportunity:"Cao — SME, quỹ đầu tư nội địa và cơ quan thống kê nhà nước đang cần giải pháp tự động hóa phân tích vĩ mô."
+  },
+  {
+    id:2, label:"Nhóm 2",
+    title:"AI cho Dịch vụ Tài chính Thông minh",
+    status:"vn", statusText:"Đã ứng dụng tại VN – còn lỗ hổng",
+    tags:["Credit Scoring","Fraud Detection","Robo-advisor","InsurTech","Chatbot"],
+    techLevel:85, userDemand:90, urgency:90,
+    problem:"Hàng triệu người Việt thiếu hồ sơ tín dụng chính thức; phát hiện gian lận thẻ/ví điện tử chạy sau thực tế; tư vấn tài chính cá nhân hầu như vắng mặt cho nhóm thu nhập trung bình.",
+    tech:"Gradient Boosting/XGBoost cho credit scoring từ alternative data (hành vi app, giao dịch viễn thông), Graph ML cho fraud detection, LLM fine-tuned cho chatbot tài chính cá nhân.",
+    stage:"Credit scoring: VPBank (FE Credit), MoMo, ZaloPay đã triển khai nhưng thiên về rule-based. Fraud detection: thực chiến nhưng false positive cao. Robo-advisor: gần như chưa có sản phẩm thương mại đại chúng.",
+    gap:"Thiếu dữ liệu hành vi tài chính dài hạn; mô hình scoring thiếu khả năng giải thích (explainability) theo yêu cầu NHNN; InsurTech định giá tự động chưa vượt qua rào cản pháp lý.",
+    opportunity:"Rất cao — 30–40% dân số unbanked/underbanked; NHNN đang thúc đẩy Open Banking và Sandbox FinTech."
+  },
+  {
+    id:3, label:"Nhóm 3",
+    title:"AI cho Quản trị Rủi ro & Tuân thủ",
+    status:"gap", statusText:"Đã ứng dụng – còn lỗ hổng",
+    tags:["AML/KYC","Rủi ro tín dụng","RegTech","Kiểm toán AI"],
+    techLevel:80, userDemand:85, urgency:85,
+    problem:"Quy trình AML/KYC tại VN vẫn còn thủ công, tốn kém, tỷ lệ false alert cao; phát hiện gian lận kế toán dựa vào kiểm toán định kỳ thay vì giám sát liên tục.",
+    tech:"Graph Neural Network phát hiện mạng lưới rửa tiền, NLP đọc giao dịch và tài liệu KYC tự động, Anomaly Detection unsupervised cho gian lận kế toán (Benford's Law + ML).",
+    stage:"AML: BIDV, Vietcombank triển khai hệ thống cảnh báo nhưng phụ thuộc vendor nước ngoài. KYC eKYC: bùng nổ 2021–2023, chất lượng nhận dạng chưa đồng đều. Kiểm toán AI: gần như chưa có ở VN.",
+    gap:"Dữ liệu giao dịch không chia sẻ giữa các tổ chức tín dụng; quy định về AML chưa bắt buộc AI; thiếu nhân lực RegTech.",
+    opportunity:"Cao — FATF đặt VN vào danh sách tăng cường giám sát năm 2023, tạo áp lực nâng cấp hệ thống AML."
+  },
+  {
+    id:4, label:"Nhóm 4",
+    title:"Quantum Computing cho Tài chính",
+    status:"res", statusText:"Chủ yếu nghiên cứu học thuật",
+    tags:["Tối ưu danh mục","Quantum ML","Qiskit","PennyLane","QAOA"],
+    techLevel:40, userDemand:45, urgency:35,
+    problem:"Tối ưu hóa danh mục đầu tư quy mô lớn và định giá phái sinh phức tạp vượt khả năng tính toán của máy tính cổ điển; Quantum hứa hẹn tăng tốc vượt trội cho các bài toán tổ hợp này.",
+    tech:"QAOA (Quantum Approximate Optimization Algorithm) cho tối ưu danh mục, VQC (Variational Quantum Classifier) cho credit scoring, quantum random walk cho định giá quyền chọn. Mô phỏng trên Qiskit/PennyLane/Cirq.",
+    stage:"Toàn cầu: JPMorgan, Goldman Sachs chạy proof-of-concept; IBM Quantum Network có đối tác tài chính. VN: hầu như chỉ có nghiên cứu học thuật ở ĐH Bách Khoa, VNUHCM. Chưa có ứng dụng thương mại.",
+    gap:"Phần cứng lượng tử thực tế còn nhiều lỗi (NISQ era); quantum advantage chưa được chứng minh rõ trong tài chính; thiếu cộng đồng và nhân lực tại VN.",
+    opportunity:"Trung bình dài hạn — phù hợp cho hackathon/R&D nhưng chưa khả thi thương mại trong 3–5 năm tới tại VN."
+  },
+  {
+    id:5, label:"Nhóm 5",
+    title:"AI cho Chính sách Công & Tài chính Công",
+    status:"new", statusText:"Ứng dụng mới nổi – tiềm năng cao",
+    tags:["Ngân sách","Gian lận thuế","An sinh xã hội","Nhận diện hộ nghèo"],
+    techLevel:65, userDemand:70, urgency:80,
+    problem:"Ngân sách nhà nước thất thoát qua gian lận thuế và phân bổ thiếu hiệu quả; nhận diện hộ nghèo và đánh giá chính sách an sinh vẫn dựa vào khảo sát định kỳ thủ công.",
+    tech:"Anomaly detection phát hiện gian lận thuế VAT (carousel fraud), ML dự báo nguồn thu ngân sách theo quý, Satellite imagery + ML đánh giá mức sống, NLP phân tích hiệu quả chính sách từ văn bản nhà nước.",
+    stage:"Quốc tế: IRS (Mỹ), HMRC (Anh) dùng AI phát hiện gian lận thuế. VN: Tổng cục Thuế triển khai hóa đơn điện tử và bước đầu phân tích rủi ro, nhưng AI còn sơ khai. Nhận diện hộ nghèo: dự án thí điểm với UNDP.",
+    gap:"Dữ liệu nhà nước phân mảnh, không liên thông; thiếu framework pháp lý về dùng AI trong ra quyết định hành chính; lo ngại về quyền riêng tư và bias.",
+    opportunity:"Cao và đặc thù — áp lực tăng thu ngân sách hậu Covid và Nghị quyết 57 về chuyển đổi số chính phủ tạo cửa sổ cơ hội."
+  },
+  {
+    id:6, label:"Nhóm 6",
+    title:"AI cho Giáo dục Tài chính & Tích hợp AI-Quantum",
+    status:"new", statusText:"Ứng dụng mới nổi – tiềm năng cao",
+    tags:["Financial Literacy","AI + Quantum","EdTech","Thương mại hóa","LLM"],
+    techLevel:60, userDemand:75, urgency:65,
+    problem:"Tỷ lệ hiểu biết tài chính của người Việt thấp (World Bank: 24%); thiếu công cụ cá nhân hóa dễ tiếp cận. Sự kết hợp AI + Quantum chưa được khám phá trong các ứng dụng tài chính thực tiễn.",
+    tech:"LLM fine-tuned cho giáo dục tài chính (chatbot giải thích khái niệm, mô phỏng kịch bản), gamification với AI adaptive learning, Quantum-enhanced ML cho các bài toán phân loại tài chính.",
+    stage:"Giáo dục tài chính AI: toàn cầu có Khan Academy, Duolingo for Finance; VN chưa có sản phẩm nổi bật. AI-Quantum tích hợp: hoàn toàn nghiên cứu, chưa có sản phẩm thương mại ở bất kỳ đâu.",
+    gap:"Nội dung tài chính tiếng Việt cho LLM còn ít; thiếu benchmark đánh giá hiểu biết tài chính người dùng; AI-Quantum tích hợp thiếu use case được kiểm chứng.",
+    opportunity:"Trung bình–Cao — thị trường EdTech VN tăng trưởng mạnh; AI-Quantum là 'blue ocean' có thể tạo IP độc đáo."
+  }
+];
+
+const statusColor = { vn:'#e2554a', gap:'#d4904a', new:'#4f8ef7', res:'#6b7280' };
+
+function render() {
+  const el = document.getElementById('cards');
+  el.innerHTML = groups.map(g => {
+    const mc = statusColor[g.status];
+    return `
+    <div class="card" onclick="toggle(${g.id})" data-id="${g.id}">
+      <div class="card-top">
+        <div>
+          <div class="group-label">${g.label}</div>
+          <div class="card-title">${g.title}</div>
+        </div>
+        <span class="badge badge-${g.status}">${g.statusText}</span>
+      </div>
+      <div class="tags">${g.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="meters">
+        <div>
+          <div class="meter-label">Kỹ thuật</div>
+          <div class="meter-track"><div class="meter-fill" style="width:${g.techLevel}%;background:${mc}"></div></div>
+        </div>
+        <div>
+          <div class="meter-label">Nhu cầu</div>
+          <div class="meter-track"><div class="meter-fill" style="width:${g.userDemand}%;background:${mc}"></div></div>
+        </div>
+        <div>
+          <div class="meter-label">Cấp thiết</div>
+          <div class="meter-track"><div class="meter-fill" style="width:${g.urgency}%;background:${mc}"></div></div>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <span class="chevron" id="chev-${g.id}">▾</span>
+        <span>Xem phân tích chi tiết</span>
+      </div>
+      <div class="detail-wrap" id="det-${g.id}">
+        <div class="detail">
+          <div><div class="dl">Vấn đề cốt lõi</div><div class="dd">${g.problem}</div></div>
+          <div><div class="dl">Kỹ thuật AI / Quantum</div><div class="dd">${g.tech}</div></div>
+          <div><div class="dl">Giai đoạn triển khai</div><div class="dd">${g.stage}</div></div>
+          <div><div class="dl">Lỗ hổng hiện tại</div><div class="dd">${g.gap}</div></div>
+          <div><div class="dl">Cơ hội tại Việt Nam</div><div class="dd">${g.opportunity}</div></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggle(id) {
+  const det  = document.getElementById('det-'  + id);
+  const chev = document.getElementById('chev-' + id);
+  const open = det.classList.toggle('open');
+  chev.classList.toggle('open', open);
+}
+
+render();
+</script>
+</body>
+</html>
